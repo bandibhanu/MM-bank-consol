@@ -74,33 +74,34 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
 		}
 	}
 
-	/*@Override
-	public SavingsAccount updateAccount() {
-		
-		return savingsAccountDAO.updateAccountint(accountNumber, newaccount_hn);
-	}*/
-
 	@Override
 	public SavingsAccount getAccountById(int accountNumber) throws ClassNotFoundException, SQLException, AccountNotFoundException {
 		return savingsAccountDAO.getAccountById(accountNumber);
 	}
-
+	
+	@Override
+	public SavingsAccount getAccountByName(String accountHolderName) throws  SQLException 
+	{
+		try {
+			return savingsAccountDAO.getAccountByName(accountHolderName);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	@Override
 	public SavingsAccount deleteAccount(int account_id) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
 		return savingsAccountDAO.deleteAccount(account_id);
 	}
+	
 	@Override
 	public double checkCurrentBalance(int accountNumber) throws ClassNotFoundException, SQLException, AccountNotFoundException
 
 	{
 		return savingsAccountDAO.checkCurrentBalance(accountNumber);
-	}
-
-	@Override
-	public SavingsAccount updateAccount(SavingsAccount account) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -114,18 +115,13 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
 		
 		 return savingsAccountDAO.sortByBalance();
 	}
+	@Override
 
-	
+	public SavingsAccount updateAccount(SavingsAccount account) throws ClassNotFoundException, SQLException {
 
-	
-	
+		return savingsAccountDAO.updateAccount(account);
 
-	/*public void updateAccount(int account_id, int chooseUpdateType,
-			String account_hn) {
-		return savingsAccountDAO.updateAccount(account_id,chooseUpdateType,account_hn);
-		
 	}
-*/
 
-	
+
 }

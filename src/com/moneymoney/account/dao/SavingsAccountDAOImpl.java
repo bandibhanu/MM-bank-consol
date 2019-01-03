@@ -12,7 +12,7 @@ import com.moneymoney.account.SavingsAccount;
 import com.moneymoney.account.util.DBUtil;
 import com.moneymoney.exception.AccountNotFoundException;
 
-public class SavingsAccountDAOImpl implements SavingsAccountDAO {
+public  class SavingsAccountDAOImpl implements SavingsAccountDAO {
 
 	public SavingsAccount createNewAccount(SavingsAccount account) throws ClassNotFoundException, SQLException {
 		Connection connection = DBUtil.getConnection();
@@ -56,22 +56,28 @@ public class SavingsAccountDAOImpl implements SavingsAccountDAO {
 		preparedStatement.setInt(2,accountNumber);
 		preparedStatement.executeUpdate();
 	}
-	/*@Override
-	public void updateBalance(int accountNumber, int accountUpdateType, String account_hn) throws ClassNotFoundException, SQLException {
+	
+	
+	@Override
+	public SavingsAccount getAccountByName(String accountHolderName) throws ClassNotFoundException, SQLException
+	{
 		Connection connection = DBUtil.getConnection();
-		connection.setAutoCommit(false);
-		if(accountUpdateType==1)
-		{
 		PreparedStatement preparedStatement = connection.prepareStatement
-				("UPDATE ACCOUNT SET account_hn=? where account_id=?");
-		preparedStatement.setString(1,account_hn);
-		preparedStatement.setInt(2,accountNumber);
-		preparedStatement.executeUpdate();*/
-		/*preparedStatement.setString(1,account.getBankAccount().getAccountHolderName());
-		preparedStatement.setInt(2,account.getBankAccount().getAccountNumber());
-		preparedStatement.executeUpdate();*/
-	
-	
+				("SELECT * FROM account where account_hn=?");
+		preparedStatement.setString(1, accountHolderName);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		SavingsAccount savingsAccount = null;
+		
+		if(resultSet.next()) {
+			
+			int accountNumber = resultSet.getInt(1);
+			double accountBalance = resultSet.getDouble(3);
+			boolean salary = resultSet.getBoolean("salary");
+			savingsAccount = new SavingsAccount(accountNumber,accountHolderName,accountBalance,salary);
+			return savingsAccount;
+		}
+		return null;
+	}
 	@Override
 	public SavingsAccount getAccountById(int accountNumber) throws ClassNotFoundException, SQLException, AccountNotFoundException {
 		Connection connection = DBUtil.getConnection();
@@ -91,18 +97,18 @@ public class SavingsAccountDAOImpl implements SavingsAccountDAO {
 		throw new AccountNotFoundException("Account with account number "+accountNumber+" does not exist.");
 	}
 	
-	public SavingsAccount updateAccount(int accountNumber,String newaccount_hn) throws SQLException, ClassNotFoundException {
-		
+	
+	@Override
+	public SavingsAccount serachAccount(int accountNumber) throws SQLException, ClassNotFoundException
+	{
 		Connection connection = DBUtil.getConnection();
 		PreparedStatement preparedStatement = connection.prepareStatement
-				("UPDATE account set account_hn=? where account_id=?");
-		preparedStatement.setString(1, newaccount_hn);
-		preparedStatement.setInt(2, accountNumber);
-		preparedStatement.executeUpdate();
-	
+				("SELECT * from account where account_id=?");
+		preparedStatement.setInt(1, accountNumber);
+		ResultSet resultSet = preparedStatement.executeQuery();
 		return null;
+		
 	}
-
 	
 
 	@Override
@@ -136,13 +142,6 @@ public class SavingsAccountDAOImpl implements SavingsAccountDAO {
 	@Override
 	public void commit() throws SQLException {
 		DBUtil.commit();
-	}
-
-	@Override
-	public SavingsAccount updateAccountint(int accountNumber,
-			String newaccount_hn) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -182,7 +181,37 @@ public class SavingsAccountDAOImpl implements SavingsAccountDAO {
 		}
 		return savingsAccounts;
 	}
+
 	
+
+	@Override
+	public SavingsAccount getAccountByName(int accountHolderName)
+			throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SavingsAccount updateAccount(SavingsAccount account)
+			throws ClassNotFoundException, SQLException {
+		Connection connection = DBUtil.getConnection();
+		PreparedStatement preparedStatement = connection.prepareStatement
+				("UPDATE account set account_id=?,account_hn=?,account_bal=?,salary=?,od_limit=?,account_type=? where account_id=?");
+		preparedStatement.setInt(1, account.getBankAccount().getAccountNumber());
+		preparedStatement.setString(2, account.getBankAccount().getAccountHolderName());
+		preparedStatement.setDouble(3, account.getBankAccount().getAccountBalance());
+		preparedStatement.setBoolean(4, account.isSalary());
+		preparedStatement.setObject(5, null);
+		preparedStatement.setString(6, "SA");
+		preparedStatement.setInt(7, account.getBankAccount().getAccountNumber());
+		
+		preparedStatement.executeUpdate();
+	
+		preparedStatement.close();
+		DBUtil.commit();
+		return account;
+	}
+
 
 	
 	

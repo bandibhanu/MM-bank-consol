@@ -17,6 +17,7 @@ public class SavingsAccount {
 		bankAccount = new BankAccount(accountNumber, accountHolderName, accountBalance);
 		this.salary = salary;
 	}
+	
 	public boolean isSalary() {
 		return salary;
 	}

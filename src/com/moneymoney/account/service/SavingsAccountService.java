@@ -10,10 +10,10 @@ public interface SavingsAccountService {
 
 	SavingsAccount createNewAccount(String accountHolderName, double accountBalance, boolean salary) throws ClassNotFoundException, SQLException;
 
-	SavingsAccount updateAccount(SavingsAccount account);
-
 	SavingsAccount getAccountById(int accountNumber) throws ClassNotFoundException, SQLException, AccountNotFoundException;
-
+	
+	SavingsAccount getAccountByName(String accountHolderName) throws ClassNotFoundException, SQLException;
+	
 	SavingsAccount deleteAccount(int accountNumber) throws ClassNotFoundException, SQLException;
 	
 	List<SavingsAccount> getAllSavingsAccount() throws ClassNotFoundException, SQLException;
@@ -28,7 +28,9 @@ public interface SavingsAccountService {
 
 	List<SavingsAccount> sortByBalance() throws ClassNotFoundException, SQLException;
 
-	//void updateAccount(int account_id, int chooseUpdateType, String account_hn);
+	SavingsAccount updateAccount(SavingsAccount account) throws ClassNotFoundException, SQLException;
+
+
 	
 }
 
